@@ -1,166 +1,191 @@
 #ifndef DOUBLE_LL_H
 #define DOUBLE_LL_H
 
+// Header guard
+// Prevents this header file from being included more than once.
 
 template <typename T>
-class doublelist{
-    public:
-        T data;
-        doublelist<T>* next = nullptr;
-        doublelist<T>* prev = nullptr;
+class doublelist {
+public:
+    T data;  // Stores the data inside the node
+
+    // Pointer to the next node
+    doublelist<T>* next = nullptr;
+
+    // Pointer to the previous node
+    doublelist<T>* prev = nullptr;
 };
 
-// ---------------
+
 // Creating a node
-// ---------------
-
 template <typename T>
-doublelist<T>* new_Node(T newData){
-	// Dynamic Allocation for a new node
-	doublelist<T>* newNode = new doublelist<T>;
-	
-	//store the data in a new node
-	newNode->data = newData;
-	
-	//since its a new node point it to null
-	newNode->next = nullptr;
-	newNode->prev = nullptr;
-	
-	return newNode;
-};
+doublelist<T>* new_Node(T newData) {
 
-//-----------
-//TRAVERSAL
-//-----------
+    // Dynamically creates a new node in memory
+    doublelist<T>* newNode = new doublelist<T>;
 
+    // Stores the given data in the new node
+    newNode->data = newData;
+
+    // The new node has no next or previous node yet
+    newNode->next = nullptr;
+    newNode->prev = nullptr;
+
+    // Returns the address of the new node
+    return newNode;
+}
+
+
+// Traversal
 template <typename T>
-void dllTraverse(doublelist<T>* currentNode){
-  doublelist<T>* tail = nullptr; 
-	//TRAVERSAL TO THE END
-	while (currentNode != NULL){
-        //prints the data
-		std::cout << currentNode->data << " ";
-        //saves the current node as the last visited node
-		tail = currentNode;
-        //move to the next node
-            currentNode = currentNode->next;
-        }
-	
-	
-	        //REVERSE TRAVERSAL
+void dllTraverse(doublelist<T>* currentNode) {
+
+    // Stores the last node visited during forward traversal
+    doublelist<T>* tail = nullptr;
+
+    // Traverses from the head toward the end of the list
+    while (currentNode != nullptr) {
+
+        // Prints the data stored in the current node
+        std::cout << currentNode->data << " ";
+
+        // Saves the current node as the last visited node
+        tail = currentNode;
+
+        // Moves to the next node
+        currentNode = currentNode->next;
+    }
+
+    // Reverse traversal
     std::cout << "\nReverse Traversal: " << std::endl;
-    while(tail != nullptr){
+
+    // Traverses backward from the last node
+    while (tail != nullptr) {
+
+        // Prints the data stored in the current node
         std::cout << tail->data << " ";
+
+        // Moves to the previous node
         tail = tail->prev;
     }
-	
-	
 }
 
 
-//---------------------
-//INSERTION AT THE HEAD
-//---------------------
-
-
-
+// Insertion at the head
 template <typename T>
-void dllInsertHead(T newData, doublelist<T>** currentHead){
-    
-    //creates a new node
+void dllInsertHead(T newData, doublelist<T>** currentHead) {
+
+    // Creates a new node
     doublelist<T>* newNode = new_Node(newData);
 
-    //point to the current head
+    // Makes the new node point to the current head
     newNode->next = *currentHead;
 
-    //current head will be pointed to a new node
+    // Makes the current head point back to the new node
     (*currentHead)->prev = newNode;
 
-    //update head pointer
+    // Updates the head pointer
+    // The new node becomes the first node
     *currentHead = newNode;
-
 }
 
-//-------------------
-//GENERAL INSERTION
-//-------------------
 
+// General insertion
 template <typename T>
-void dllGenInsert(T newData, doublelist<T>* prevNode){
+void dllGenInsert(T newData, doublelist<T>* prevNode) {
 
-    if(prevNode == nullptr){
+    // Stops the function if prevNode does not exist
+    if (prevNode == nullptr) {
         return;
     }
 
-    //create a new node
+    // Creates a new node
     doublelist<T>* newNode = new_Node(newData);
 
-    //new node points to the node after the prevNode
+    // Makes the new node point to the node after prevNode
     newNode->next = prevNode->next;
 
-    //newNode previous must be pointed to the prevNode
+    // Makes the new node point back to prevNode
     newNode->prev = prevNode;
 
-    //if there is a node after the previous node
-    //make it point back to the new node
-    if(prevNode->next != nullptr){
+    // Checks if there is a node after prevNode
+    if (prevNode->next != nullptr) {
+
+        // Makes the next node point back to the new node
         prevNode->next->prev = newNode;
     }
 
-    //prevNode will be pointed to the newNode
+    // Makes prevNode point forward to the new node
     prevNode->next = newNode;
 }
 
-//------------------
-//INSERT AT THE END
-//------------------
-template <typename T>
-void dllInsertEnd(T newData, doublelist<T>* currenthead){
 
-    //Create a new node
+// Insert at the end
+template <typename T>
+void dllInsertEnd(T newData, doublelist<T>* currenthead) {
+
+    // Creates a new node
     doublelist<T>* newNode = new_Node(newData);
 
-    //Traverse until the last nod
-    while(currenthead->next != nullptr){
+    // Moves through the list until the last node
+    while (currenthead->next != nullptr) {
         currenthead = currenthead->next;
     }
 
+    // Makes the last node point to the new node
     currenthead->next = newNode;
-    newNode->prev = currenthead;
 
+    // Makes the new node point back to the previous last node
+    newNode->prev = currenthead;
 }
 
-//------------------
-//DELETION
-//------------------
+
+// Deletion
 template <typename T>
-void dllDelete(T findData, doublelist<T>** currenthead){
-    if(*currenthead == nullptr){
+void dllDelete(T findData, doublelist<T>** currenthead) {
+
+    // Checks if the list is empty
+    if (*currenthead == nullptr) {
         return;
     }
 
-    doublelist<T>* currentnode= *currenthead;
+    // Starts searching from the head
+    doublelist<T>* currentnode = *currenthead;
 
-    while(currentnode != nullptr && currentnode-> data !=findData){
-        currentnode= currentnode->next;
+    // Searches for the node containing findData
+    while (currentnode != nullptr && currentnode->data != findData) {
+        currentnode = currentnode->next;
     }
 
-    if (currentnode==nullptr){
+    // If the data was not found, stop the function
+    if (currentnode == nullptr) {
         return;
     }
-    if (currentnode == *currenthead){
-        *currenthead=currentnode->next;
 
-    if (currenthead !=nullptr){
-        (*currenthead)->prev= nullptr;
-    }
+    // Checks if the node to delete is the head
+    if (currentnode == *currenthead) {
 
-    }else {
-        currentnode->prev->next= currentnode->next;
-        if(currentnode->next !=nullptr){
-            currentnode->next->prev= currentnode->prev;
+        // Moves the head to the next node
+        *currenthead = currentnode->next;
+
+        // If a new head exists, remove its previous pointer
+        if (*currenthead != nullptr) {
+            (*currenthead)->prev = nullptr;
+        }
+
+    } else {
+
+        // Makes the previous node point to the next node
+        currentnode->prev->next = currentnode->next;
+
+        // If a next node exists, make it point back
+        // to the previous node
+        if (currentnode->next != nullptr) {
+            currentnode->next->prev = currentnode->prev;
         }
     }
+
+    // Deletes the node from dynamic memory
     delete currentnode;
 }
 
